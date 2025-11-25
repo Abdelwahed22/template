@@ -1,0 +1,51 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+
+  <div class="card shadow-lg border-0" style="max-width: 450px; width: 100%; border-radius: 16px;">
+    <div class="card-body p-4 p-md-5">
+
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">مرحباً بعودتك 👋</h2>
+        <p class="text-muted">سجل دخولك للمتابعة</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- الإيميل -->
+        <div class="mb-3">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" class="form-control" formControlName="email"
+            [class.is-invalid]="f.email.invalid && f.email.touched" placeholder="name@example.com">
+          <div class="invalid-feedback">بريد إلكتروني غير صحيح</div>
+        </div>
+
+        <!-- كلمة المرور -->
+        <div class="mb-3">
+          <label class="form-label">كلمة المرور</label>
+          <input type="password" class="form-control" formControlName="password"
+            [class.is-invalid]="f.password.invalid && f.password.touched" placeholder="********">
+          <div class="invalid-feedback">كلمة المرور مطلوبة</div>
+        </div>
+
+        <!-- نسيت كلمة المرور -->
+        <div class="d-flex justify-content-end mb-4">
+          <a routerLink="/forgot-password" class="text-decoration-none small">نسيت كلمة المرور؟</a>
+        </div>
+
+        <!-- زر الدخول -->
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="loginForm.invalid || isSubmitting">
+            {{ isSubmitting ? 'جاري الدخول...' : 'تسجيل الدخول' }}
+          </button>
+        </div>
+
+        <!-- ليس لديك حساب -->
+        <div class="text-center mt-4">
+          <span class="text-muted">ليس لديك حساب؟ </span>
+          <a routerLink="/register" class="text-decoration-none fw-bold">إنشاء حساب جديد</a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+/* Profile Picture Styling */
+.profile-picture-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #007bff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.profile-picture-container:hover .profile-picture {
+    opacity: 0.7;
+    transform: scale(1.05);
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    font-size: 2rem;
+    color: white;
+    background-color: rgba(0, 123, 255, 0.8);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture-container:hover .upload-overlay {
+    opacity: 1;
+}
+
+/* Statistics Cards */
+.stat-card {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styling */
+.form-control:disabled {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    .profile-picture-container,
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+
+    .upload-overlay {
+        width: 120px;
+        height: 120px;
+        font-size: 1.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .bi {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

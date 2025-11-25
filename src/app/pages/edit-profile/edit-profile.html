@@ -1,0 +1,141 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+
+    <div class="card shadow-lg border-0" style="max-width: 600px; width: 100%; border-radius: 16px;">
+        <div class="card-body p-4 p-md-5">
+
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">جاري التحميل...</span>
+                </div>
+                <p class="mt-3 text-muted">جاري تحميل البيانات...</p>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div *ngIf="!isLoading">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">تعديل الملف الشخصي ⚙️</h2>
+                    <p class="text-muted">قم بتحديث معلوماتك الشخصية</p>
+                </div>
+
+                <!-- Profile Picture Section -->
+                <div class="text-center mb-4">
+                    <div class="profile-picture-container mb-3">
+                        <img [src]="imagePreview || getProfilePictureUrl()" alt="Profile Picture"
+                            class="profile-picture">
+                        <label for="fileInput" class="upload-overlay">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
+                        <input type="file" id="fileInput" accept="image/*" (change)="onFileSelected($event)"
+                            class="d-none">
+                    </div>
+
+                    <!-- Upload Button (shown when file selected) -->
+                    <button *ngIf="selectedFile && !uploadingImage" type="button" class="btn btn-sm btn-success"
+                        (click)="uploadProfilePicture()">
+                        <i class="bi bi-upload"></i> رفع الصورة
+                    </button>
+
+                    <!-- Uploading State -->
+                    <button *ngIf="uploadingImage" type="button" class="btn btn-sm btn-success" disabled>
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        جاري الرفع...
+                    </button>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Profile Information Form -->
+                <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
+                    <!-- Email (Read-only) -->
+                    <div class="mb-3">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" [value]="currentProfile?.email || ''" readonly
+                            disabled>
+                        <small class="text-muted">لا يمكن تعديل البريد الإلكتروني</small>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label class="form-label">الاسم الأول</label>
+                        <input type="text" class="form-control" formControlName="firstName"
+                            [class.is-invalid]="f.firstName.invalid && f.firstName.touched"
+                            placeholder="أدخل الاسم الأول">
+                        <div class="invalid-feedback" *ngIf="f.firstName.errors?.['required']">
+                            الاسم الأول مطلوب
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.firstName.errors?.['maxlength']">
+                            الاسم الأول يجب أن يكون أقل من 50 حرف
+                        </div>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label class="form-label">الاسم الأخير</label>
+                        <input type="text" class="form-control" formControlName="lastName"
+                            [class.is-invalid]="f.lastName.invalid && f.lastName.touched"
+                            placeholder="أدخل الاسم الأخير">
+                        <div class="invalid-feedback" *ngIf="f.lastName.errors?.['required']">
+                            الاسم الأخير مطلوب
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.lastName.errors?.['maxlength']">
+                            الاسم الأخير يجب أن يكون أقل من 50 حرف
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-control" formControlName="phoneNumber"
+                            [class.is-invalid]="f.phoneNumber.invalid && f.phoneNumber.touched"
+                            placeholder="01xxxxxxxxx">
+                        <div class="invalid-feedback" *ngIf="f.phoneNumber.errors?.['required']">
+                            رقم الهاتف مطلوب
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.phoneNumber.errors?.['pattern']">
+                            رقم الهاتف غير صحيح (يجب أن يبدأ بـ 01 ويتكون من 11 رقم)
+                        </div>
+                    </div>
+
+                    <!-- Member Since -->
+                    <div class="mb-4" *ngIf="currentProfile">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar"></i>
+                            عضو منذ: {{ currentProfile.createdAt | date: 'dd/MM/yyyy' }}
+                        </small>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="row mb-4 text-center" *ngIf="currentProfile">
+                        <div class="col-6">
+                            <div class="stat-card p-3 bg-light rounded">
+                                <h5 class="text-primary mb-0">{{ currentProfile.lostItemsCount }}</h5>
+                                <small class="text-muted">العناصر المفقودة</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card p-3 bg-light rounded">
+                                <h5 class="text-success mb-0">{{ currentProfile.foundItemsCount }}</h5>
+                                <small class="text-muted">العناصر الموجودة</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill" [disabled]="!canSave">
+                            {{ isSubmitting ? 'جاري الحفظ...' : 'حفظ التغييرات' }}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" routerLink="/home"
+                            [disabled]="isSubmitting">
+                            إلغاء
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

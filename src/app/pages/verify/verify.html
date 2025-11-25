@@ -1,0 +1,64 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+  <!-- الكارت الرئيسي بظل خفيف وحواف دائرية -->
+  <div class="card shadow-lg border-0" style="max-width: 450px; width: 100%; border-radius: 16px;">
+    <div class="card-body p-4 p-md-5 text-center">
+      
+      <!-- أيقونة قفل تعبيرية (اختياري) -->
+      <div class="mb-4">
+        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3">
+          <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+        </div>
+      </div>
+
+      <!-- العنوان والوصف -->
+      <h3 class="fw-bold text-dark mb-2">تفعيل الحساب 🔐</h3>
+      <p class="text-muted mb-4">
+        لقد أرسلنا كود تفعيل مكون من 6 أرقام إلى بريدك الإلكتروني:<br>
+        <span class="text-primary fw-bold d-block mt-1">{{ email }}</span>
+      </p>
+
+      <!-- الفورم -->
+      <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+        
+        <div class="mb-4">
+          <label class="form-label fw-bold text-secondary small text-uppercase">كود التفعيل</label>
+          
+          <!-- حقل الإدخال (بتنسيق خاص للأرقام) -->
+          <input type="text" 
+                 class="form-control form-control-lg text-center fw-bold letter-spacing-lg" 
+                 class="form-control form-control-lg text-center fw-bold" 
+                 style="letter-spacing: 0.5em;"
+                 formControlName="code" 
+                 placeholder="------" 
+                 maxlength="6"
+                 [class.is-invalid]="verifyForm.get('code')?.invalid && verifyForm.get('code')?.touched">
+          
+          <!-- رسالة الخطأ -->
+          <div class="invalid-feedback mt-2" *ngIf="verifyForm.get('code')?.errors?.['required']">
+            من فضلك أدخل الكود
+          </div>
+          <div class="invalid-feedback mt-2" *ngIf="verifyForm.get('code')?.errors?.['minlength']">
+            الكود يجب أن يكون 6 أرقام
+          </div>
+        </div>
+
+        <!-- زر التأكيد -->
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-primary btn-lg py-3 rounded-3 shadow-sm" 
+                  [disabled]="verifyForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">تأكيد وتفعيل الحساب</span>
+            <span *ngIf="isSubmitting">
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              جاري التحقق...
+            </span>
+          </button>
+        </div>
+
+        <!-- رابط العودة أو إعادة الإرسال -->
+        
+
+      </form>
+      
+    </div>
+  </div>
+</div>

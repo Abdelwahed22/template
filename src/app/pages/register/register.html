@@ -1,0 +1,70 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light py-5">
+  <div class="card shadow-lg border-0" style="max-width: 500px; width: 100%; border-radius: 15px;">
+    <div class="card-body p-4 p-md-5">
+
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">حساب جديد 🚀</h2>
+        <p class="text-muted">سجل بياناتك عشان تقدر تبلغ عن مفقوداتك</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">الاسم الأول</label>
+            <input type="text" class="form-control" formControlName="firstName"
+              [class.is-invalid]="f.firstName.invalid && f.firstName.touched" placeholder="أحمد">
+            <div class="invalid-feedback">مطلوب (3 حروف على الأقل)</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">اسم العائلة</label>
+            <input type="text" class="form-control" formControlName="lastName"
+              [class.is-invalid]="f.lastName.invalid && f.lastName.touched" placeholder="علي">
+            <div class="invalid-feedback">اسم العائلة مطلوب</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">البريد الإلكتروني</label>
+            <input type="email" class="form-control" formControlName="email"
+              [class.is-invalid]="f.email.invalid && f.email.touched" placeholder="name@example.com">
+            <div class="invalid-feedback">بريد إلكتروني غير صحيح</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">رقم الهاتف</label>
+            <input type="tel" class="form-control" formControlName="phoneNumber"
+              [class.is-invalid]="f.phoneNumber.invalid && f.phoneNumber.touched" placeholder="01xxxxxxxxx">
+            <div class="invalid-feedback">رقم هاتف غير صحيح</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">كلمة المرور</label>
+            <input type="password" class="form-control" formControlName="password"
+              [class.is-invalid]="f.password.invalid && f.password.touched" placeholder="********">
+            <div class="invalid-feedback">يجب أن تكون 6 أحرف على الأقل</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">تأكيد كلمة المرور</label>
+            <input type="password" class="form-control" formControlName="confirmPassword"
+              [class.is-invalid]="f.confirmPassword.invalid && f.confirmPassword.touched" placeholder="********">
+            <div class="invalid-feedback">تأكيد كلمة المرور مطلوب</div>
+          </div>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="registerForm.invalid || isSubmitting">
+            {{ isSubmitting ? 'جاري التسجيل...' : 'إنشاء الحساب' }}
+          </button>
+        </div>
+
+        <div class="text-center mt-3">
+          <span class="text-muted">لديك حساب بالفعل؟ </span>
+          <a routerLink="/login" class="text-decoration-none fw-bold">تسجيل الدخول</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

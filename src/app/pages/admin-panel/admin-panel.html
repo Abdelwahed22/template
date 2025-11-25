@@ -1,0 +1,240 @@
+<div class="admin-panel-container">
+    <div class="container-fluid py-4">
+
+        <div class="header mb-4">
+            <h1 class="display-5 fw-bold text-primary">
+                <i class="bi bi-shield-lock me-2"></i>
+                لوحة التحكم
+            </h1>
+            <p class="text-muted">إدارة المنصة والمستخدمين والعناصر</p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="statistics-section mb-5">
+            <h3 class="h5 fw-bold mb-3">الإحصائيات العامة</h3>
+
+            <div *ngIf="loadingStats" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+
+            <div *ngIf="!loadingStats && statistics" class="row g-3">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card bg-primary text-white">
+                        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
+                        <div class="stat-details">
+                            <h4 class="stat-number">{{ statistics.users.total }}</h4>
+                            <p class="stat-label">إجمالي المستخدمين</p>
+                            <small>نشط: {{ statistics.users.active }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card bg-danger text-white">
+                        <div class="stat-icon"><i class="bi bi-search"></i></div>
+                        <div class="stat-details">
+                            <h4 class="stat-number">{{ statistics.items.lost }}</h4>
+                            <p class="stat-label">العناصر المفقودة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card bg-success text-white">
+                        <div class="stat-icon"><i class="bi bi-box-seam-fill"></i></div>
+                        <div class="stat-details">
+                            <h4 class="stat-number">{{ statistics.items.found }}</h4>
+                            <p class="stat-label">العناصر الموجودة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card bg-info text-white">
+                        <div class="stat-icon"><i class="bi bi-link-45deg"></i></div>
+                        <div class="stat-details">
+                            <h4 class="stat-number">{{ statistics.matches.total }}</h4>
+                            <p class="stat-label">التطابقات</p>
+                            <small>قيد الانتظار: {{ statistics.matches.pending }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div class="users-section mb-5">
+            <h3 class="h5 fw-bold mb-3">
+                <i class="bi bi-people me-2"></i>
+                إدارة المستخدمين
+            </h3>
+
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="البحث عن مستخدم (الاسم أو البريد الإلكتروني)..."
+                    [(ngModel)]="searchQuery">
+            </div>
+
+            <div *ngIf="loadingUsers" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+
+            <div *ngIf="!loadingUsers" class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>المستخدم</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الهاتف</th>
+                            <th>تاريخ التسجيل</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of filteredUsers">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-person-circle fs-4 text-muted me-2"></i>
+                                    <div>
+                                        <div class="fw-bold">{{ user.firstName }} {{ user.lastName }}</div>
+                                        <small class="text-muted">{{ user.role }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phoneNumber }}</td>
+                            <td>{{ user.createdAt | date: 'dd/MM/yyyy' }}</td>
+                            <td>
+                                <span class="badge" [class.bg-success]="user.isActive"
+                                    [class.bg-danger]="!user.isActive">
+                                    {{ user.isActive ? 'نشط' : 'محظور' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm" [class.btn-danger]="user.isActive"
+                                    [class.btn-success]="!user.isActive" (click)="toggleUserStatus(user)">
+                                    <i class="bi" [class.bi-ban]="user.isActive"
+                                        [class.bi-check-circle]="!user.isActive"></i>
+                                    {{ user.isActive ? 'حظر' : 'إلغاء الحظر' }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        عرض {{ (usersPage - 1) * usersPageSize + 1 }} -
+                        {{ Math.min(usersPage * usersPageSize, totalUsers) }} من {{ totalUsers }}
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" (click)="prevUsersPage()" [disabled]="usersPage === 1">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" (click)="nextUsersPage()"
+                            [disabled]="usersPage >= totalUsersPages">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items -->
+        <div class="items-section">
+            <h3 class="h5 fw-bold mb-3">
+                <i class="bi bi-box me-2"></i>
+                إدارة العناصر
+            </h3>
+
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="activeTab === 'lost'" (click)="switchTab('lost')"
+                        style="cursor: pointer;">
+                        <i class="bi bi-search me-1"></i>
+                        المفقودات ({{ statistics?.items?.lost || 0 }})
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="activeTab === 'found'" (click)="switchTab('found')"
+                        style="cursor: pointer;">
+                        <i class="bi bi-box-seam me-1"></i>
+                        الموجودات ({{ statistics?.items?.found || 0 }})
+                    </a>
+                </li>
+            </ul>
+
+            <div *ngIf="loadingItems" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+
+            <div *ngIf="!loadingItems" class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>العنصر</th>
+                            <th>الفئة</th>
+                            <th>الموقع</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of items">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="item-image-thumb me-2">
+                                        <img [src]="item.imageUrl || 'images/placeholder-item.png'" [alt]="item.title"
+                                            class="rounded">
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ item.title }}</div>
+                                        <small class="text-muted text-truncate"
+                                            style="max-width: 200px; display: block;">
+                                            {{ item.description }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-primary">{{ item.category }}</span></td>
+                            <td>
+                                <i class="bi bi-geo-alt me-1"></i>
+                                {{ item.location?.city || 'غير محدد' }}
+                            </td>
+                            <td><small>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small></td>
+                            <td>
+                                <span class="badge" [class.bg-warning]="item.status === 'Active'"
+                                    [class.bg-success]="item.status === 'Matched'"
+                                    [class.bg-secondary]="item.status === 'Closed'">
+                                    {{ item.status }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        عرض {{ (itemsPage - 1) * itemsPageSize + 1 }} -
+                        {{ Math.min(itemsPage * itemsPageSize, totalItems) }} من {{ totalItems }}
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-primary" (click)="prevItemsPage()" [disabled]="itemsPage === 1">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" (click)="nextItemsPage()"
+                            [disabled]="itemsPage >= totalItemsPages">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="items.length === 0" class="text-center py-5">
+                    <i class="bi bi-inbox display-1 text-muted"></i>
+                    <p class="mt-3 text-muted">لا توجد عناصر</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
